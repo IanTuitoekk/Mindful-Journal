@@ -62,3 +62,37 @@ class UserController:
         except Exception as e:
             db.session.rollback()
             return {'error': str(e)}, 500
+
+    def login_user(data):
+        """Login a user"""
+        try:
+            # Check if data exists
+            if not data:
+                return {'error': 'No data provided'}, 400
+            
+            # Get fields
+            email = data.get('email', '').strip().lower()
+            password = data.get('password', '')
+            
+            # Check required fields
+            if not email:
+                return {'error': 'Email is required'}, 400
+            if not password:
+                return {'error': 'Password is required'}, 400
+            
+            # Find user by email
+            user = User.query.filter_by(email=email).first()
+            if not user or user.password != password:
+                return {'error': 'Invalid email or password'}, 401
+            
+            return {
+                'message': 'Login successful',
+                'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email
+                }
+            }, 200
+            
+        except Exception as e:
+            return {'error': str(e)}, 500    
