@@ -23,9 +23,9 @@ class AuthViewModel(
     private val _authState = MutableStateFlow(AuthState())
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
-    fun signUp(email: String, password: String, name: String? = null) {
+    fun signUp(username: String, email: String, password: String) {
         viewModelScope.launch {
-            authRepository.signUp(email, password, name).collect { result ->
+            authRepository.signUp(username, email, password).collect { result ->
                 when (result) {
                     is Resource.Loading -> {
                         _authState.value = AuthState(isLoading = true)

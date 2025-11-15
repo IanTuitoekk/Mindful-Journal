@@ -12,21 +12,23 @@ class AuthRepository(
     private val authApi: AuthApi,
     private val tokenManager: TokenManager
 ) {
-    fun signUp(email: String, password: String, name: String? = null): Flow<Resource<String>> = flow {
+    fun signUp(username: String, email: String, password: String): Flow<Resource<String>> = flow {
         try {
             emit(Resource.Loading())
-
-            val response = authApi.signUp(SignUpRequest(email, password, name))
-
-            if (response.isSuccessful && response.body()?.success == true) {
+            val response = authApi.signUp(SignUpRequest(username, email, password))
+            
+            if (response.isSuccessful) {
                 val authResponse = response.body()!!
-                authResponse.token?.let { tokenManager.saveAuthToken(it) }
-                authResponse.user?.let {
-                    tokenManager.saveUserInfo(it.email, it.id)
+                if (authResponse.success) {
+                    authResponse.user?.let {
+                        tokenManager.saveUserInfo(it.email, it.id.toString())
+                    }
+                    emit(Resource.Success(authResponse.message ?: "Sign up successful"))
+                } else {
+                    emit(Resource.Error(authResponse.error ?: "Sign up failed"))
                 }
-                emit(Resource.Success(authResponse.message ?: "Sign up successful"))
             } else {
-                emit(Resource.Error(response.body()?.message ?: "Sign up failed"))
+                emit(Resource.Error("Sign up failed"))
             }
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
@@ -36,18 +38,20 @@ class AuthRepository(
     fun login(email: String, password: String): Flow<Resource<String>> = flow {
         try {
             emit(Resource.Loading())
-
             val response = authApi.login(LoginRequest(email, password))
-
-            if (response.isSuccessful && response.body()?.success == true) {
+            
+            if (response.isSuccessful) {
                 val authResponse = response.body()!!
-                authResponse.token?.let { tokenManager.saveAuthToken(it) }
-                authResponse.user?.let {
-                    tokenManager.saveUserInfo(it.email, it.id)
+                if (authResponse.success) {
+                    authResponse.user?.let {
+                        tokenManager.saveUserInfo(it.email, it.id.toString())
+                    }
+                    emit(Resource.Success(authResponse.message ?: "Login successful"))
+                } else {
+                    emit(Resource.Error(authResponse.error ?: "Login failed"))
                 }
-                emit(Resource.Success(authResponse.message ?: "Login successful"))
             } else {
-                emit(Resource.Error(response.body()?.message ?: "Login failed"))
+                emit(Resource.Error("Login failed"))
             }
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))

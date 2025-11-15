@@ -1,15 +1,16 @@
 package com.example.mindfuljournal.data.remote.dto
 
 data class AuthResponse(
-    val success: Boolean,
     val message: String? = null,
-    val token: String? = null,
+    val error: String? = null,
     val user: User? = null
-)
+) {
+    val success: Boolean
+        get() = error == null && user != null
+}
 
 data class User(
-    val id: String,
-    val email: String,
-    val name: String? = null,
-    val createdAt: String? = null
+    val id: Int,
+    val username: String,
+    val email: String
 )

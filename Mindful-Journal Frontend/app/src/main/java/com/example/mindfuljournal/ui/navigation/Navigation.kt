@@ -23,7 +23,7 @@ fun AppNavigation(viewModel: AuthViewModel) {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route // change to Screen.Login.route later
+        startDestination = Screen.Login.route // change to Screen.Login.route later
     ) {
         composable(Screen.Login.route) {
             LoginScreen(

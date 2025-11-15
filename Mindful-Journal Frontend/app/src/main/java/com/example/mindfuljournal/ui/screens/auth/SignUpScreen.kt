@@ -28,7 +28,7 @@ fun SignUpScreen(
     onSignUpSuccess: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -40,7 +40,8 @@ fun SignUpScreen(
 
     // Validation
     val passwordsMatch = password == confirmPassword
-    val isFormValid = email.isNotBlank() &&
+    val isFormValid = username.isNotBlank() &&
+	    email.isNotBlank() &&
             password.isNotBlank() &&
             password.length >= 6 &&
             passwordsMatch
@@ -86,11 +87,11 @@ fun SignUpScreen(
 
             // Name Field (Optional)
             OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text("Name (Optional)") },
+                value = username,
+                onValueChange = { username = it },
+                label = { Text("Username") },
                 leadingIcon = {
-                    Icon(Icons.Default.Person, contentDescription = "Name")
+                    Icon(Icons.Default.Person, contentDescription = "Username")
                 },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
@@ -191,7 +192,7 @@ fun SignUpScreen(
                     onDone = {
                         focusManager.clearFocus()
                         if (isFormValid) {
-                            viewModel.signUp(email, password, name.ifBlank { null })
+                            viewModel.signUp(username,email, password)
                         }
                     }
                 ),
@@ -210,7 +211,7 @@ fun SignUpScreen(
             Button(
                 onClick = {
                     if (isFormValid) {
-                        viewModel.signUp(email, password, name.ifBlank { null })
+                        viewModel.signUp(username, email, password)
                     }
                 },
                 modifier = Modifier

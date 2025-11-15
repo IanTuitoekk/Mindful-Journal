@@ -7,19 +7,22 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitInstance {
-    private const val BASE_URL = "https://your-backend-api.com/api/"
-
+    // Use 10.0.2.2 for Android emulator to access localhost
+    // For physical device, use your computer's IP address (e.g., "http://192.168.1.100:5000/")
+    private const val BASE_URL = "http://10.0.2.2:5000/"
+    
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+    
+    private val client = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .build()
+    
     val authApi: AuthApi by lazy {
-        val loggingInterceptor = HttpLoggingInterceptor()
-        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-
-        val client = OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
-
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
