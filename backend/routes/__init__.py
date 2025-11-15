@@ -30,3 +30,21 @@ def init_routes(app):
         result, status_code = JournalController.create_journal(data)
         return jsonify(result), status_code
     
+    @app.route('/journals/read/<int:journal_id>', methods=['GET'])
+    def get_journal(journal_id):
+        """Get a journal entry by ID"""
+        result, status_code = JournalController.get_journal(journal_id)
+        return jsonify(result), status_code
+    
+    @app.route('/journals/update/<int:journal_id>', methods=['PUT'])
+    def update_journal(journal_id):       
+        """Update a journal entry by ID"""
+        data = request.get_json()
+        result, status_code = JournalController.update_journal(journal_id, data)
+        return jsonify(result), status_code
+    
+    @app.route('/journals/delete/<int:journal_id>', methods=['DELETE'])
+    def delete_journal(journal_id):       
+        """Delete a journal entry by ID"""
+        result, status_code = JournalController.delete_journal(journal_id)
+        return jsonify(result), status_code

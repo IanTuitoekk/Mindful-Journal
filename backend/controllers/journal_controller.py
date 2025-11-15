@@ -21,3 +21,56 @@ class JournalController:
         except Exception as e:
             db.session.rollback()
             return {'message': 'Error creating journal entry', 'error': str(e)}, 500
+        
+    @staticmethod
+    def get_journal(journal_id):    
+        """Get a journal entry by ID"""
+        journal = Journal.query.get(journal_id)
+        if journal:
+            return {
+                'journal_id': journal.journal_id,
+                'user_id': journal.user_id,
+                'title': journal.title,
+                'content': journal.content,
+                'created_at': journal.created_at,
+                'updated_at': journal.updated_at
+            }, 200
+        else:
+            return {'message': 'Journal entry not found'}, 404
+        
+    @staticmethod
+    def update_journal(journal_id, data):       
+        """Update a journal entry by ID"""
+        journal = Journal.query.get(journal_id)
+        if not journal:
+            return {'message': 'Journal entry not found'}, 404
+        
+        try:
+            title = data.get('title')
+            content = data.get('content')
+            
+            if title:
+                journal.title = title
+            if content:
+                journal.content = content
+            
+            db.session.commit()
+            return {'message': 'Journal entry updated successfully'}, 200
+        except Exception as e:
+            db.session.rollback()
+            return {'message': 'Error updating journal entry', 'error': str(e)}, 500
+
+    @staticmethod
+    def delete_journal(journal_id):
+        """Delete a journal entry by ID"""
+        journal = Journal.query.get(journal_id)
+        if not journal:
+            return {'message': 'Journal entry not found'}, 404
+        
+        try:
+            db.session.delete(journal)
+            db.session.commit()
+            return {'message': 'Journal entry deleted successfully'}, 200
+        except Exception as e:
+            db.session.rollback()
+            return {'message': 'Error deleting journal entry', 'error': str(e)}, 500

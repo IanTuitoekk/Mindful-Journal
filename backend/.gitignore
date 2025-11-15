@@ -1,3 +1,4 @@
+
 # Python
 __pycache__/
 *.py[cod]
@@ -22,8 +23,9 @@ instance/
 *.sqlite3
 
 # Migration files (optional - uncomment if you don't want to track migrations)
-# migrations/
+migrations/
 migrations/__pycache__/
+
 # IDE
 .vscode/
 .idea/
