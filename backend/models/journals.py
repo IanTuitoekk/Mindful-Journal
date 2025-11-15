@@ -1,4 +1,4 @@
-from database  import  db
+from database import db
 from dataclasses import dataclass
 
 @dataclass
@@ -12,15 +12,15 @@ class JournalType:
 
 class Journal(db.Model):
     __tablename__ = 'journals'
-    
-    journal_id = db.Column(db.Integer, primary_key=True)
+
+    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
-    
+
     user = db.relationship('User', backref=db.backref('journals', lazy=True))
-    
+
     def __repr__(self):
         return f'<Journal {self.title} by User {self.user_id}>'

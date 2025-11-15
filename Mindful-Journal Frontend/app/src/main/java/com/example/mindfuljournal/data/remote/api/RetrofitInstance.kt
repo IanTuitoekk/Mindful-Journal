@@ -30,4 +30,12 @@ object RetrofitInstance {
             .build()
             .create(AuthApi::class.java)
     }
+    val journalApi: JournalApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(JournalApi::class.java)
+    }
 }

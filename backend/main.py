@@ -15,6 +15,7 @@ migrate = Migrate(app, db)
 
 # Import models
 from models.users import User
+from models.journals import Journal
 
 # Initialize routes
 from routes import init_routes

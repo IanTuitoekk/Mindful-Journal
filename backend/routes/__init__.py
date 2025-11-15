@@ -48,3 +48,9 @@ def init_routes(app):
         """Delete a journal entry by ID"""
         result, status_code = JournalController.delete_journal(journal_id)
         return jsonify(result), status_code
+    @app.route('/journals/user/<int:user_id>', methods=['GET'])
+    def get_user_journals(user_id):
+        """Get all journals for a user"""
+        result, status_code = JournalController.get_user_journals(user_id)
+        return jsonify(result), status_code
+    
