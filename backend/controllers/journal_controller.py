@@ -9,11 +9,17 @@ class JournalController:
             user_id = data.get('user_id')
             title = data.get('title')
             content = data.get('content')
+            mood = data.get('mood')  # Add this line
             
             if not all([user_id, title, content]):
                 return {'message': 'Missing required fields'}, 400
             
-            new_journal = Journal(user_id=user_id, title=title, content=content)
+            new_journal = Journal(
+                user_id=user_id, 
+                title=title, 
+                content=content,
+                mood=mood  # Add this line
+            )
             db.session.add(new_journal)
             db.session.commit()
             
@@ -32,6 +38,7 @@ class JournalController:
                 'user_id': journal.user_id,
                 'title': journal.title,
                 'content': journal.content,
+                'mood': journal.mood,  # Add this line
                 'created_at': journal.created_at.strftime('%Y-%m-%d %H:%M:%S'),
                 'updated_at': journal.updated_at.strftime('%Y-%m-%d %H:%M:%S')
             }, 200
@@ -48,11 +55,14 @@ class JournalController:
         try:
             title = data.get('title')
             content = data.get('content')
+            mood = data.get('mood')  
             
             if title:
                 journal.title = title
             if content:
                 journal.content = content
+            if mood is not None:  
+                journal.mood = mood
             
             db.session.commit()
             return {'message': 'Journal entry updated successfully'}, 200
@@ -88,6 +98,7 @@ class JournalController:
                     'user_id': journal.user_id,
                     'title': journal.title,
                     'content': journal.content,
+                    'mood': journal.mood,  # Add this line
                     'created_at': journal.created_at.strftime('%Y-%m-%d %H:%M:%S'),
                     'updated_at': journal.updated_at.strftime('%Y-%m-%d %H:%M:%S')
                 })

@@ -7,6 +7,7 @@ class JournalType:
     user_id: int
     title: str
     content: str
+    mood: str  # Add this line
     created_at: str
     updated_at: str
 
@@ -17,6 +18,7 @@ class Journal(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
+    mood = db.Column(db.String(50), nullable=True)  # Add this line
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
 
