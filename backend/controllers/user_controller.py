@@ -40,12 +40,12 @@ class UserController:
             if User.query.filter_by(email=email).first():
                 return {'error': 'Email already exists'}, 409
             
-            # Create user
+            # Create user with hashed password
             new_user = User(
                 username=username,
-                email=email,
-                password=password
+                email=email
             )
+            new_user.set_password(password)  # Hash the password
             
             db.session.add(new_user)
             db.session.commit()
@@ -63,6 +63,7 @@ class UserController:
             db.session.rollback()
             return {'error': str(e)}, 500
 
+    @staticmethod  # Add this decorator
     def login_user(data):
         """Login a user"""
         try:
@@ -82,7 +83,7 @@ class UserController:
             
             # Find user by email
             user = User.query.filter_by(email=email).first()
-            if not user or user.password != password:
+            if not user or not user.check_password(password):  # Use check_password method
                 return {'error': 'Invalid email or password'}, 401
             
             return {
@@ -95,4 +96,4 @@ class UserController:
             }, 200
             
         except Exception as e:
-            return {'error': str(e)}, 500    
+            return {'error': str(e)}, 500
