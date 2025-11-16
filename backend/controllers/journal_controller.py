@@ -23,23 +23,23 @@ class JournalController:
             return {'message': 'Error creating journal entry', 'error': str(e)}, 500
         
     @staticmethod
-    def get_journal(journal_id):    
+    def get_journal(journal_id):
         """Get a journal entry by ID"""
         journal = Journal.query.get(journal_id)
         if journal:
             return {
-                'journal_id': journal.journal_id,
+                'id': journal.id,
                 'user_id': journal.user_id,
                 'title': journal.title,
                 'content': journal.content,
-                'created_at': journal.created_at,
-                'updated_at': journal.updated_at
+                'created_at': journal.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': journal.updated_at.strftime('%Y-%m-%d %H:%M:%S')
             }, 200
         else:
             return {'message': 'Journal entry not found'}, 404
         
     @staticmethod
-    def update_journal(journal_id, data):       
+    def update_journal(journal_id, data):
         """Update a journal entry by ID"""
         journal = Journal.query.get(journal_id)
         if not journal:
@@ -59,7 +59,7 @@ class JournalController:
         except Exception as e:
             db.session.rollback()
             return {'message': 'Error updating journal entry', 'error': str(e)}, 500
-
+    
     @staticmethod
     def delete_journal(journal_id):
         """Delete a journal entry by ID"""
@@ -74,3 +74,24 @@ class JournalController:
         except Exception as e:
             db.session.rollback()
             return {'message': 'Error deleting journal entry', 'error': str(e)}, 500
+    
+    @staticmethod
+    def get_user_journals(user_id):
+        """Get all journal entries for a user"""
+        try:
+            journals = Journal.query.filter_by(user_id=user_id).order_by(Journal.created_at.desc()).all()
+            
+            journal_list = []
+            for journal in journals:
+                journal_list.append({
+                    'id': journal.id,
+                    'user_id': journal.user_id,
+                    'title': journal.title,
+                    'content': journal.content,
+                    'created_at': journal.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                    'updated_at': journal.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+                })
+            
+            return {'journals': journal_list}, 200
+        except Exception as e:
+            return {'message': 'Error fetching journals', 'error': str(e)}, 500

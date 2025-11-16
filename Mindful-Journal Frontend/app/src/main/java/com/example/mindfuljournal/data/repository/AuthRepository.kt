@@ -21,7 +21,7 @@ class AuthRepository(
                 val authResponse = response.body()!!
                 if (authResponse.success) {
                     authResponse.user?.let {
-                        tokenManager.saveUserInfo(it.email, it.id.toString())
+                        tokenManager.saveUserInfo(it.email, it.id.toString(), it.username)
                     }
                     emit(Resource.Success(authResponse.message ?: "Sign up successful"))
                 } else {
@@ -44,7 +44,7 @@ class AuthRepository(
                 val authResponse = response.body()!!
                 if (authResponse.success) {
                     authResponse.user?.let {
-                        tokenManager.saveUserInfo(it.email, it.id.toString())
+                        tokenManager.saveUserInfo(it.email, it.id.toString(), it.username)
                     }
                     emit(Resource.Success(authResponse.message ?: "Login successful"))
                 } else {

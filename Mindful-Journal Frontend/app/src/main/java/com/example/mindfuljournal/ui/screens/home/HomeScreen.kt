@@ -28,7 +28,7 @@ data class JournalEntry(
 @Composable
 fun HomeScreen(
     navController: NavController,
-    username: String = "Rita",
+    username: String,
     journalEntries: List<JournalEntry> = sampleEntries()
 ) {
     val prompts = listOf(
@@ -43,7 +43,7 @@ fun HomeScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* TODO: Navigate to new journal entry */ },
+                onClick = { navController.navigate("new_entry") },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Entry")
