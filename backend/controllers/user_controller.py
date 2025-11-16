@@ -97,3 +97,15 @@ class UserController:
             
         except Exception as e:
             return {'error': str(e)}, 500
+        
+    @staticmethod
+
+    def logout_user(data):
+
+        """Logout a user"""
+        try:
+        # For simplicity, just return a success message
+            return {'message': 'Logout successful'}, 200
+        except Exception as e:
+
+            return {'error': str(e)}, 500

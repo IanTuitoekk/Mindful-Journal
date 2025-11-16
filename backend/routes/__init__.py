@@ -22,6 +22,12 @@ def init_routes(app):
         data = request.get_json()
         result, status_code = UserController.login_user(data)
         return jsonify(result), status_code
+    @app.route('/users/logout', methods=['POST'])
+    def logout():
+        """Logout a user"""
+        data = request.get_json()
+        result, status_code = UserController.logout_user(data)
+        return jsonify(result), status_code
     
     @app.route('/journals/create', methods=['POST'] )
     def create_journal():
