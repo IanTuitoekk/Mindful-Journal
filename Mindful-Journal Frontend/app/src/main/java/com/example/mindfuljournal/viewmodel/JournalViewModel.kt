@@ -25,17 +25,17 @@ class JournalViewModel(
     
     private val _journals = MutableStateFlow<List<JournalEntry>>(emptyList())
     val journals: StateFlow<List<JournalEntry>> = _journals.asStateFlow()
-    
-    fun createJournal(title: String, content: String, onSuccess: () -> Unit) {
+
+    fun createJournal(title: String, content: String, mood: String? = null, onSuccess: () -> Unit) {
         viewModelScope.launch {
-            journalRepository.createJournal(title, content).collect { result ->
+            journalRepository.createJournal(title, content, mood).collect { result ->
                 when (result) {
                     is Resource.Loading -> {
                         _journalState.value = JournalState(isLoading = true)
                     }
                     is Resource.Success -> {
                         _journalState.value = JournalState(successMessage = result.data)
-                        loadUserJournals() // Reload journals after creating
+                        loadUserJournals()
                         onSuccess()
                     }
                     is Resource.Error -> {
@@ -45,17 +45,17 @@ class JournalViewModel(
             }
         }
     }
-    
-    fun updateJournal(journalId: Int, title: String?, content: String?, onSuccess: () -> Unit) {
+
+    fun updateJournal(journalId: Int, title: String?, content: String?, mood: String? = null, onSuccess: () -> Unit) {
         viewModelScope.launch {
-            journalRepository.updateJournal(journalId, title, content).collect { result ->
+            journalRepository.updateJournal(journalId, title, content, mood).collect { result ->
                 when (result) {
                     is Resource.Loading -> {
                         _journalState.value = JournalState(isLoading = true)
                     }
                     is Resource.Success -> {
                         _journalState.value = JournalState(successMessage = result.data)
-                        loadUserJournals() // Reload journals after updating
+                        loadUserJournals()
                         onSuccess()
                     }
                     is Resource.Error -> {

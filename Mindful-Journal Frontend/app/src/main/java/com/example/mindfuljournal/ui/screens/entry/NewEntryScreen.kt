@@ -13,14 +13,17 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewEntryScreen(
-    entryId: Int? = null, // null for new entry, otherwise editing
+    entryId: Int? = null,
+    initialTitle: String = "",
+    initialMood: String = "",
+    initialContent: String = "",
     onNavigateBack: () -> Unit,
     onSave: (String, String, String) -> Unit,
     onDelete: ((Int) -> Unit)? = null
 ) {
-    var title by remember { mutableStateOf("") }
-    var mood by remember { mutableStateOf("") }
-    var content by remember { mutableStateOf("") }
+    var title by remember { mutableStateOf(initialTitle) }
+    var mood by remember { mutableStateOf(initialMood) }
+    var content by remember { mutableStateOf(initialContent) }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     val isEditing = entryId != null
@@ -53,7 +56,6 @@ fun NewEntryScreen(
                 onClick = {
                     if (title.isNotBlank() && content.isNotBlank()) {
                         onSave(title, mood.ifBlank { "😐 Neutral" }, content)
-                        // Navigation happens in ViewModel callback
                     }
                 }
             ) {
@@ -119,7 +121,6 @@ fun NewEntryScreen(
                 onClick = {
                     if (title.isNotBlank() && content.isNotBlank()) {
                         onSave(title, mood.ifBlank { "😐 Neutral" }, content)
-                        // Navigation happens in ViewModel callback
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -131,6 +132,7 @@ fun NewEntryScreen(
     }
 
     // Delete Confirmation Dialog
+
     if (showDeleteDialog && entryId != null) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
@@ -139,9 +141,8 @@ fun NewEntryScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        onDelete?.invoke(entryId)
                         showDeleteDialog = false
-                        onNavigateBack()
+                        onDelete?.invoke(entryId)  // This calls the delete and navigates back
                     }
                 ) {
                     Text("Delete", color = MaterialTheme.colorScheme.error)
