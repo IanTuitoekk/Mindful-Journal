@@ -14,26 +14,26 @@ class JournalRepository(
     private val journalApi: JournalApi,
     private val tokenManager: TokenManager
 ) {
-    fun createJournal(title: String, content: String): Flow<Resource<String>> = flow {
+    fun createJournal(title: String, content: String, mood: String? = null): Flow<Resource<String>> = flow {
         try {
             emit(Resource.Loading())
-            
-            // Get user ID from token manager
+
             val userId = tokenManager.getUserId().first()?.toIntOrNull()
-            
+
             if (userId == null) {
                 emit(Resource.Error("User not logged in"))
                 return@flow
             }
-            
+
             val request = CreateJournalRequest(
                 user_id = userId,
                 title = title,
-                content = content
+                content = content,
+                mood = mood  // Add mood parameter
             )
-            
+
             val response = journalApi.createJournal(request)
-            
+
             if (response.isSuccessful && response.body() != null) {
                 val body = response.body()!!
                 if (body.error == null) {
@@ -48,14 +48,14 @@ class JournalRepository(
             emit(Resource.Error(e.localizedMessage ?: "An error occurred"))
         }
     }
-    
-    fun updateJournal(journalId: Int, title: String?, content: String?): Flow<Resource<String>> = flow {
+
+    fun updateJournal(journalId: Int, title: String?, content: String?, mood: String? = null): Flow<Resource<String>> = flow {
         try {
             emit(Resource.Loading())
-            
-            val request = UpdateJournalRequest(title, content)
+
+            val request = UpdateJournalRequest(title, content, mood)  // Add mood
             val response = journalApi.updateJournal(journalId, request)
-            
+
             if (response.isSuccessful && response.body() != null) {
                 val body = response.body()!!
                 if (body.error == null) {

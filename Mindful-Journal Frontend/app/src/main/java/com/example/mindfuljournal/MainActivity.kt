@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppNavigation(viewModel = authViewModel)
+                    AppNavigation(authViewModel = authViewModel)  // ← Fixed: added parameter name
                 }
             }
         }
